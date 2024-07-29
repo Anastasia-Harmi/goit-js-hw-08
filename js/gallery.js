@@ -83,14 +83,25 @@ const productCardsTemplate = images
   .join("");
 const productsGalleryEl = document.querySelector(".gallery");
 productsGalleryEl.innerHTML = productCardsTemplate;
+
 const onProductCardClick = (event) => {
+  event.preventDefault(); // відміняємо поведінку за замовчууваням
   if (event.target === event.currentTarget) {
     return;
   }
-  const productCard = event.target.closest(".gallery-item");
-  const productData = productCard.dataset.sourse; //шукаю по data-атрибуті
+
+  const productCard = event.target.closest(".gallery-image");
+  if (!productCard) return; //перевірка на наявність productCard
+  const productData = productCard.dataset.source; //шукаю по data-атрибуті, в лекції по id шукали
   const productInfo = images.find(
-    (product) => product.dataset.sourse === productInfo
+    (product) => productData === product.original
   );
+  if (!productInfo) return; //перевірка на наявність productInfo
+
+  const modalInstance = basicLightbox.create(`
+   <img class="product-modal-img" src="${productInfo.original}" alt="${productInfo.description}"/>
+`);
+
+  modalInstance.show();
 };
 productsGalleryEl.addEventListener("click", onProductCardClick);
